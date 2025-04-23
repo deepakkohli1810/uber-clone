@@ -3,16 +3,18 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-    fullname:{
-        type:String , 
-        required:true,
-        minlength: [ 3, 'First name must be at least 3 characters long']
+   fullname:{
+    firstname:{
+        type:String, 
+        required:true, 
+        minlength:[3, 'First name must have atleast 3 characters'],
     },
     lastname:{
-        type:String , 
-    
-        minlength: [ 3, 'First name must be at least 3 characters long']
-    },
+        type:String, 
+        minlength:[3, 'Last name must have atleast 3 characters'],
+    }
+
+   },
     email: {
         type:String, 
         required :true, 
@@ -22,6 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type:String, 
+        select:false,
         required:true, 
 
     }, 
@@ -31,15 +34,20 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-userSchema.method.generateAuthToken = function () {
+userSchema.methods.generateAuthToken = function () {
     const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
     return token;
 }
 
-userSchema.method.comparePassword = async function (password) {
+userSchema.methods.comparePassword = async function (password) {
    return await bcrypt.compare(password, this.password);
 }
 
-userSchema.static.hashPassword = async function (password) {    
+userSchema.statics.hashPassword = async function (password) {    
     return await bcrypt.hash(password, 10);
 }
+
+
+const userModel =  mongoose.model('user', userSchema);
+
+module.exports = userModel;
