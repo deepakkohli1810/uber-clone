@@ -1,5 +1,5 @@
-# /users/register Endpoint Documentation
-
+ # Backend API Documentation
+# /users/register Endpoint
 ## Description
 Endpoint to register a new user. It validates input data, creates a new user, and returns the created user's token and information.
 
